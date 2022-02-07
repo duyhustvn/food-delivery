@@ -36,7 +36,7 @@ func (User) TableName() string {
 }
 
 func (u *User) Mask(isAdmin bool) {
-	u.SQLModel.Mask(common.DbTypeUser)
+	u.SQLModel.GenUID(common.DbTypeUser)
 
 	//if !isAdmin {
 	//	u.Phone = ""
@@ -60,7 +60,7 @@ func (UserCreate) TableName() string {
 }
 
 func (u *UserCreate) Mask(isAdmin bool) {
-	u.SQLModel.Mask(common.DbTypeUser)
+	u.SQLModel.GenUID(common.DbTypeUser)
 }
 
 type UserLogin struct {

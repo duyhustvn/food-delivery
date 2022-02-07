@@ -10,6 +10,6 @@ type SQLModel struct {
 	Status    int        `json:"status" gorm:"column:status;default:1;"`
 }
 
-func (sm *SQLModel) Mask(objType int) {
+func (sm *SQLModel) GenUID(objType int) {
 	sm.FakeId = NewUID(uint32(sm.ID), objType, 1)
 }

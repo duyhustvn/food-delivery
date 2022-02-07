@@ -10,6 +10,7 @@ func (s *sqlStore) ListDataWithCondition(
 	ctx context.Context,
 	filter *restaurantmodel.Filter,
 	paging *common.Paging,
+	moreKeys ...string,
 ) ([]restaurantmodel.Restaurant, error) {
 	db := s.db
 
@@ -23,6 +24,12 @@ func (s *sqlStore) ListDataWithCondition(
 
 	if err := db.Table(restaurantmodel.Restaurant{}.TableName()).Count(&paging.Total).Error; err != nil {
 		return nil, err
+	}
+
+	for i := range moreKeys {
+		if moreKeys[i] == "User" {
+			db = db.Preload("User")
+		}
 	}
 
 	if err := db.
