@@ -81,7 +81,9 @@ func main() {
 			restaurants.PUT("/:id", ginrestaurant.UpdateRestaurant(appCtx))
 			restaurants.DELETE("/:id", ginrestaurant.DeleteRestaurant(appCtx))
 
+			restaurants.GET("/:id/like", ginrestaurantlike.ListUsersLiked(appCtx))
 			restaurants.POST("/:id/like", ginrestaurantlike.UserLikeRestaurant(appCtx))
+			restaurants.DELETE("/:id/dislike", ginrestaurantlike.UserDislikeRestaurant(appCtx))
 		}
 	}
 
