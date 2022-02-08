@@ -6,6 +6,7 @@ import (
 	"food-delivery/component/uploadprovider"
 	"food-delivery/middleware"
 	ginrestaurant "food-delivery/module/restaurant/transport/gin"
+	"food-delivery/module/restaurantlike/transport/ginrestaurantlike"
 	ginupload "food-delivery/module/upload/transport/gin"
 	userstorage "food-delivery/module/user/storage"
 	"food-delivery/module/user/transport/ginuser"
@@ -79,6 +80,8 @@ func main() {
 			restaurants.GET("/:id", ginrestaurant.GetRestaurant(appCtx))
 			restaurants.PUT("/:id", ginrestaurant.UpdateRestaurant(appCtx))
 			restaurants.DELETE("/:id", ginrestaurant.DeleteRestaurant(appCtx))
+
+			restaurants.POST("/:id/like", ginrestaurantlike.UserLikeRestaurant(appCtx))
 		}
 	}
 
