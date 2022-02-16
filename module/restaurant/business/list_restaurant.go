@@ -26,7 +26,7 @@ func (biz *listRestaurantBiz) ListRestaurant(ctx context.Context,
 	filter *restaurantmodel.Filter,
 	paging *common.Paging,
 ) ([]restaurantmodel.Restaurant, error) {
-	result, err := biz.repo.ListRestaurant(ctx, filter, paging, "User")
+	result, err := biz.repo.ListRestaurant(ctx, filter, paging, "LikeCount")
 
 	if err != nil {
 		return nil, err

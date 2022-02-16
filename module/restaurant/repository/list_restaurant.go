@@ -39,14 +39,20 @@ func (biz *listRestaurantRepo) ListRestaurant(ctx context.Context,
 		return nil, err
 	}
 
-	ids := make([]int, len(result))
-	for i, item := range result {
-		ids[i] = item.ID
-	}
+	for _, key := range moreKeys {
+		switch key {
+		case "LikeCount":
+			ids := make([]int, len(result))
+			for i, item := range result {
+				ids[i] = item.ID
+			}
 
-	if likeCounts, err := biz.likeStore.GetRestaurantLikes(ctx, ids); err == nil {
-		for i, item := range result {
-			result[i].LikeCount = likeCounts[item.ID]
+			if likeCounts, err := biz.likeStore.GetRestaurantLikes(ctx, ids); err == nil {
+				for i, item := range result {
+					result[i].LikeCount = likeCounts[item.ID]
+				}
+			}
+
 		}
 	}
 
