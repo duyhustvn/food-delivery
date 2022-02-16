@@ -15,12 +15,17 @@ type ListRestaurantStore interface {
 	) ([]restaurantmodel.Restaurant, error)
 }
 
-type listRestaurantBiz struct {
-	store ListRestaurantStore
+type GetRestaurantLikeStore interface {
+	GetRestaurantLikes(ctx context.Context, ids []int) (map[int]int, error)
 }
 
-func NewListRestaurantBiz(store ListRestaurantStore) *listRestaurantBiz {
-	return &listRestaurantBiz{store: store}
+type listRestaurantBiz struct {
+	store     ListRestaurantStore
+	likeStore GetRestaurantLikeStore
+}
+
+func NewListRestaurantBiz(store ListRestaurantStore, likeStore GetRestaurantLikeStore) *listRestaurantBiz {
+	return &listRestaurantBiz{store: store, likeStore: likeStore}
 }
 
 func (biz *listRestaurantBiz) ListRestaurant(ctx context.Context,
@@ -31,6 +36,17 @@ func (biz *listRestaurantBiz) ListRestaurant(ctx context.Context,
 
 	if err != nil {
 		return nil, err
+	}
+
+	ids := make([]int, len(result))
+	for i, item := range result {
+		ids[i] = item.ID
+	}
+
+	if likeCounts, err := biz.likeStore.GetRestaurantLikes(ctx, ids); err == nil {
+		for i, item := range result {
+			result[i].LikeCount = likeCounts[item.ID]
+		}
 	}
 
 	return result, nil

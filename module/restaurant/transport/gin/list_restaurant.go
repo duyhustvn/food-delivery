@@ -7,6 +7,7 @@ import (
 	bizrestaurant "food-delivery/module/restaurant/business"
 	restaurantmodel "food-delivery/module/restaurant/model"
 	restaurantstorage "food-delivery/module/restaurant/storage"
+	restaurantlikestorage "food-delivery/module/restaurantlike/storage"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -41,7 +42,8 @@ func ListRestaurant(appContext appctx.AppContext) func(ctx *gin.Context) {
 		}
 
 		store := restaurantstorage.NewSQLStore(appContext.GetMaiDBConnection())
-		biz := bizrestaurant.NewListRestaurantBiz(store)
+		likeStore := restaurantlikestorage.NewSQLStore(appContext.GetMaiDBConnection())
+		biz := bizrestaurant.NewListRestaurantBiz(store, likeStore)
 
 		result, err := biz.ListRestaurant(c.Request.Context(), &filter, &paging)
 

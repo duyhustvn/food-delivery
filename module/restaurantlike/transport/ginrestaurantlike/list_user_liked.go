@@ -11,6 +11,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+/*
+   List users like a restaurant
+  **/
 func ListUsersLiked(appCtx appctx.AppContext) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		uid, err := common.FromBase58(c.Param("id"))
