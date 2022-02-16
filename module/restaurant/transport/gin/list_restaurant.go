@@ -6,6 +6,7 @@ import (
 	"food-delivery/component/appctx"
 	bizrestaurant "food-delivery/module/restaurant/business"
 	restaurantmodel "food-delivery/module/restaurant/model"
+	restaurantrepo "food-delivery/module/restaurant/repository"
 	restaurantstorage "food-delivery/module/restaurant/storage"
 	restaurantlikestorage "food-delivery/module/restaurantlike/storage"
 	"net/http"
@@ -43,7 +44,8 @@ func ListRestaurant(appContext appctx.AppContext) func(ctx *gin.Context) {
 
 		store := restaurantstorage.NewSQLStore(appContext.GetMaiDBConnection())
 		likeStore := restaurantlikestorage.NewSQLStore(appContext.GetMaiDBConnection())
-		biz := bizrestaurant.NewListRestaurantBiz(store, likeStore)
+		repo := restaurantrepo.NewListRestaurantRepo(store, likeStore)
+		biz := bizrestaurant.NewListRestaurantBiz(repo)
 
 		result, err := biz.ListRestaurant(c.Request.Context(), &filter, &paging)
 
