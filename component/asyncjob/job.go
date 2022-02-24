@@ -2,7 +2,6 @@ package asyncjob
 
 import (
 	"context"
-	"errors"
 	"time"
 )
 
@@ -92,7 +91,7 @@ func (j *job) Retry(ctx context.Context) error {
 	if err := j.handler(ctx); err != nil {
 		if j.retryIndex == len(j.config.Retries)-1 {
 			j.state = StateRetryFailed
-			return errors.New("Execced max retry")
+			return err
 		}
 		j.state = StateFailed
 		return err
@@ -110,6 +109,6 @@ func (j *job) RetryIndex() int {
 	return j.retryIndex
 }
 
-func (j *job) SetRetry(times []time.Duration) {
+func (j *job) SetRetryDurations(times []time.Duration) {
 	j.config.Retries = times
 }
