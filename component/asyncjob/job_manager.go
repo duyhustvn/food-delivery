@@ -3,9 +3,7 @@ package asyncjob
 import (
 	"context"
 	"fmt"
-	"log"
 	"sync"
-	"time"
 )
 
 type group struct {
@@ -38,6 +36,7 @@ func (g *group) Run(ctx context.Context) error {
 			fmt.Println(err)
 			return err
 		}
+		g.wg.Done()
 	}
 
 	g.wg.Wait()
@@ -50,29 +49,6 @@ func (g *group) Run(ctx context.Context) error {
 	}
 
 	return err
-}
-
-func (g *group) Run1(ctx context.Context) error {
-	errChan := make(chan error, len(g.jobs))
-
-	for _, job := range g.jobs {
-		g.wg.Add(1)
-		go g.runJobChan(ctx, job, errChan)
-		time.Sleep(time.Second * 1)
-	}
-
-	g.wg.Wait()
-
-	select {
-	case err := <-errChan:
-		if err != nil {
-			return err
-		}
-		log.Printf("err: %+v", err)
-		g.wg.Done()
-	}
-
-	return nil
 }
 
 func (g *group) runJob(ctx context.Context, job Job) error {
@@ -88,22 +64,4 @@ func (g *group) runJob(ctx context.Context, job Job) error {
 		}
 	}
 	return nil
-}
-
-func runGroup(ctx context.Context) {
-
-}
-
-func (g *group) runJobChan(ctx context.Context, job Job, c chan error) {
-	if err := job.Execute(ctx); err != nil {
-		for {
-			if job.State() == StateRetryFailed {
-				c <- err
-			}
-
-			if err := job.Retry(ctx); err == nil {
-				c <- nil
-			}
-		}
-	}
 }
